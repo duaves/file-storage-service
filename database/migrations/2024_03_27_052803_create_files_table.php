@@ -21,6 +21,9 @@ return new class extends Migration
             // Оригинальное название файла
             $table->string('original_name');
 
+            // Изображение
+            $table->string('image');
+
             // Расширение файла
             $table->string('extension');
 
