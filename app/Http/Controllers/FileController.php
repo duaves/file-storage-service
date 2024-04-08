@@ -15,7 +15,12 @@ class FileController extends Controller
      */
     public function index()
     {
-        return FileListResource::collection(File::query()->paginate(50));
+        $search = request('search', false);
+        $query = File::query();
+        if($search){
+            $query->where('original_name', 'like', "%{$search}%")->orWhere('name', 'like', "%{$search}%");
+        }
+        return FileListResource::collection($query->paginate(50));
     }
 
     /**

@@ -3,12 +3,13 @@
     <div class="bg-white overflow-x-auto max-w-screen-lg mx-auto p-8 rounded-xl drop-shadow-xl m-28">
       <div class="flex justify-between w-full p-1 mb-4">
         <div class="flex flex-grow">
-          <input v-model="search" @change="getFiles" type="text" placeholder="Поиск..."
+          <input v-model="search" @change="getFiles(null)" type="text" placeholder="Поиск..."
             class=" p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300">
         </div>
+        <router-link to="/add-file">
         <button @click="showModal = true"
           class="flex px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:bg-blue-700"><PlusIcon class="h-6 w-6 text-white mr-2" />Добавить
-          файл</button>
+          файл</button></router-link>
       </div>
       <table class=" min-w-max w-full bg-white border border-gray-300 rounded-lg overflow-hidden ">
         <thead>
@@ -84,7 +85,7 @@ onMounted(() => {
 })
 
 function getFiles(url = null) {
-  store.dispatch('getFiles', {url})
+  store.dispatch('getFiles', {url, search: search.value})
 }
 
 function getForPage(ev, link){
