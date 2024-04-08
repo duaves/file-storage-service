@@ -7,6 +7,10 @@ use App\Http\Resources\FileListResource;
 use App\Http\Resources\FileResource;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class FileController extends Controller
 {
@@ -28,7 +32,21 @@ class FileController extends Controller
      */
     public function store(FileRequest $request)
     {
-        return new FileResource(File::create($request->validate()));
+        $data = $request -> validated();
+
+        $image = $data['image'] ?? null;
+
+        if($image){
+            $relativePath = $this->saveImage($image);
+            $data['image'] = URL::to(Storage::url($relativePath));
+            $data['image_extension'] = $image->getClientMineType();
+            $data['image_size'] = $image -> getSize();
+                }
+
+        $file = File::create($data); 
+
+        return new FileResource($file);
+
     }
 
     /**
@@ -57,5 +75,19 @@ class FileController extends Controller
         $file->delete();
 
         return response()->noContent();
+    }
+
+
+    private function saveImage(UploadedFile $image){
+        $path = 'files/' . Str::random();
+        if(!Storage::exists(($path))){
+            Storage::makeDirectory($path, 0755, true);
+        }
+
+        if(!Storage::putFileAs('public/' . $path, $image->getClientOriginalName())){
+            throw new \Exception("Невозможно сохранить файл \"{$image->getClientOriginalName()}\"");
+        }
+
+        return $path . '/' . $image->getClientOriginalName();
     }
 }

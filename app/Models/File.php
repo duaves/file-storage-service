@@ -11,7 +11,7 @@ class File extends Model
 
     protected $table = 'files';
 
-    protected $fillable = ['original_name', 'extension', 'image', 'size'];
+    protected $fillable = ['name', 'image', 'original_name'];
 
   
 }
